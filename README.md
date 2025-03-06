@@ -29,26 +29,23 @@ This project demonstrates a RESTful API built with Laravel 10, featuring:
 
 1. Clone the repository:
 
-```bash
 git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-Install dependencies:
-Bash
 
+Install dependencies:
 composer install
+
 Configure the environment:
 Copy .env.example to .env
 Update the database credentials in .env
 Set other environment variables as needed
 Generate an application key:
-Bash
 
 php artisan key:generate
 Run migrations:
-Bash
 
 php artisan migrate
 Seed the database:
-Bash
+
 
 php artisan db:seed
 API Documentation
