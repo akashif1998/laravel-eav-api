@@ -7,60 +7,125 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Laravel EAV API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project demonstrates a RESTful API built with Laravel 10, featuring:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* User authentication with Laravel Passport
+* Core models: User, Project, Timesheet with relationships
+* EAV (Entity-Attribute-Value) implementation for dynamic project attributes
+* Flexible filtering system for projects
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Setup Instructions
 
-## Learning Laravel
+**Prerequisites**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* PHP 8.1 or higher
+* Composer
+* MySQL
+* Git
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Installation**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Clone the repository:
 
-## Laravel Sponsors
+```bash
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+Install dependencies:
+Bash
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+composer install
+Configure the environment:
+Copy .env.example to .env
+Update the database credentials in .env
+Set other environment variables as needed
+Generate an application key:
+Bash
 
-### Premium Partners
+php artisan key:generate
+Run migrations:
+Bash
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+php artisan migrate
+Seed the database:
+Bash
 
-## Contributing
+php artisan db:seed
+API Documentation
+Authentication
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+POST /api/register: Register a new user
 
-## Code of Conduct
+Request body: {"first_name": "John", "last_name": "Doe", "email": "john.doe@example.com", "password": "password123"}
+Response: 201 Created with user data and access token
+POST /api/login: Login with existing user
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Request body: {"email": "john.doe@example.com", "password": "password123"}
+Response: 200 OK with user data and access token
+POST /api/logout: Logout current user
 
-## Security Vulnerabilities
+Requires Authorization header with Bearer token
+Response: 200 OK with success message
+Projects
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+GET /api/projects: List all projects (supports filtering)
 
-## License
+Example with filter: /api/projects?filters[name]=ProjectA&filters[department.eq]=IT
+Response: 200 OK with an array of projects
+GET /api/projects/{id}: Get a specific project by ID
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Response: 200 OK with project details and EAV attributes
+POST /api/projects: Create a new project
+
+Request body:
+JSON
+
+{
+    "name": "New Project",
+    "status": "active",
+    "attributes": [
+        {"attribute_id": 1, "value": "Technology"},
+        {"attribute_id": 2, "value": "2024-03-10"}
+    ]
+}
+Response: 201 Created with the new project details
+PUT /api/projects/{id}: Update a project
+
+Request body (similar to create, with updated values)
+Response: 200 OK with the updated project details
+DELETE /api/projects/{id}: Delete a project
+
+Response: 204 No Content
+Timesheets
+
+Similar CRUD endpoints as Projects, with relevant fields (user_id, project_id, task_name, date, hours)
+Attributes
+
+GET /api/attributes: List all attributes
+
+Response: 200 OK with an array of attributes
+GET /api/attributes/{id}: Get a specific attribute by ID
+
+Response: 200 OK with attribute details
+POST /api/attributes: Create a new attribute
+
+Request body: {"name": "new_attribute", "type": "text"}
+Response: 201 Created with the new attribute details
+PUT /api/attributes/{id}: Update an attribute
+
+Request body (similar to create, with updated values)
+Response: 200 OK with the updated attribute details
+DELETE /api/attributes/{id}: Delete an attribute
+
+Response: 204 No Content
+Example Requests/Responses
+See the "API Documentation" section above for examples.
+Test Credentials
+Email: a.ahmed@example.com
+Password: password1998
+Note: You might need to create this test user manually or through the registration API.
+
+Additional Information
+This API follows RESTful principles and uses JSON for data exchange.
+Error handling is implemented to provide informative error messages.
+The filtering system supports basic operators (=, >, <, LIKE) for both regular and EAV attributes.
